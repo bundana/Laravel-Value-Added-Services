@@ -7,7 +7,7 @@ The Bundana Laravel Value Added Services package is a Laravel service for sendin
 To install the package, you can use Composer. Run the following command in your terminal:
 
 ```bash
-composer require bundana/sms
+composer require bundana/services
 ```
 After installation, add the service provider to your config/app.php file:
 ```
