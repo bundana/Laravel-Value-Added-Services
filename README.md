@@ -14,17 +14,9 @@ After installation, add the service provider to your config/app.php file:
 ```php
 'providers' => [
     // ...
-    Bundana\Services\Messaging\BundanaServiceProvider::class,
-],
+ \Bundana\Services\BundanaServiceProvider::class,
 ```
-
-After installation, add the service provider to your `config/app.php` file:
-
-  ```php  'providers' => [
-        // ...
-        Bundana\Services\Messaging\BundanaServiceProvider::class,
-    ],
-```
+ 
 Publish the package configuration file:
 
 ```sh
@@ -38,16 +30,17 @@ $ composer dump-autoload
 ```
 ## Configuration
 
-You'll need to configure the package with your Mnotify API keys. Open the `config/bundana-config.php` file and update the following values:
+You'll need to configure the package with your Mnotify API keys. Open the `.env` file and add the following values:
 
--   `api_key`: Your Mnotify API key.
--   `api_api_secret`: Your Mnotify API secret.
--   `api_sender_id`: Your Mnotify sender ID.
+-   `MNOTIFY_API_KEY=`:Your Mnotify API key.
+-   `MNOTIFY_SENDER_ID= `: Your Mnotify sender ID.
+-   `MNOTIFY_API_KEY_V2=`: Your Mnotify V2 API key.
+-   `MNOTIFY_SENDER_ID_V2=`: Your Mnotify sender ID 
 
 Additionally, if you plan to use the Hubtel Payment Gateway, provide the required credentials.
 ## Usage
 
-### Sending SMS
+### Sending SMS via Mnotify
 
 To send an SMS, you can use the `Mnotify` class. Here's an example:
 
@@ -57,7 +50,18 @@ Mnotify::to('recipient_phone_number')
 ->message('Your SMS message goes here')
 ->send();
 ```
-### Sending Bulk SMS
+
+To send an SMS using new sender id and api key:
+
+  ```php
+use  Bundana\Services\Messaging\Mnotify;
+Mnotify::to('recipient_phone_number')
+->message('Your SMS message goes here')
+>newKeys(['apiKey' => 'ss', 'sender_id' =>'ss']);
+->send();
+```
+
+### Sending Bulk SMS via Mnotify
 
 To send bulk SMS, use the `sendBulk` method:
 ```php
@@ -71,8 +75,7 @@ To send bulk SMS, use the `sendBulk` method:
     $responses = Mnotify::sendBulk($contactsAndMessages);
   ```
 
-### Checking SMS Balance
-
+### Checking Mnotify SMS Balance
 To check the SMS balance:
 ```php
     use Bundana\Services\Messaging\Mnotify;
