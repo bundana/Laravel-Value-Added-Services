@@ -22,7 +22,7 @@ Publish the package configuration file:
 ```sh
  php artisan vendor:publish --provider="Bundana\Services\Messaging\BundanaServiceProvider" --tag="config"
 ```
-This will create a `config/bundana-config.php` file where you can set your Mnotify API keys.
+This will create a `bundana-config.php` in your `config` folder of your laravel project file where you can set your Mnotify API keys.
 Now that we have published a few new files to our application we need to reload them with the following command:
 
 ```sh
@@ -30,7 +30,7 @@ $ composer dump-autoload
 ```
 ## Configuration
 
-You'll need to configure the package with your Mnotify API keys. Open the `.env` file and add the following values:
+You'll need to configure the package with your Mnotify, Hubtel and Paystack API keys. Open the `.env` file and add the following values:
 
 -   `MNOTIFY_API_KEY=`:Your Mnotify API key.
 -   `MNOTIFY_SENDER_ID= `: Your Mnotify sender ID.
