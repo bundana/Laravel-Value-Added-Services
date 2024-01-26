@@ -10,7 +10,7 @@ To install the package, you can use Composer. Run the following command in your 
 composer require bundana/services
 ```
 After installation, add the service provider to your config/app.php file:
-```
+```php
 'providers' => [
     // ...
     Bundana\Services\Messaging\BundanaServiceProvider::class,
@@ -24,9 +24,15 @@ After installation, add the service provider to your `config/app.php` file:
     ],
 Publish the package configuration file:
 
-    php artisan vendor:publish --provider="Bundana\Services\Messaging\BundanaServiceProvider" --tag="config"
+```sh
+ php artisan vendor:publish --provider="Bundana\Services\Messaging\BundanaServiceProvider" --tag="config"
+```
 This will create a `config/bundana-config.php` file where you can set your Mnotify API keys.
+Now that we have published a few new files to our application we need to reload them with the following command:
 
+```sh
+$ composer dump-autoload
+```
 ## Configuration
 
 You'll need to configure the package with your Mnotify API keys. Open the `config/bundana-config.php` file and update the following values:
@@ -46,19 +52,20 @@ To send an SMS, you can use the `Mnotify` class. Here's an example:
 ### Sending Bulk SMS
 
 To send bulk SMS, use the `sendBulk` method:
-
+```php
     use Bundana\Services\Messaging\Mnotify;
     
     $contactsAndMessages = [
         'recipient1' => 'message1',
         'recipient2' => 'message2',
     ];
-    
+
     $responses = Mnotify::sendBulk($contactsAndMessages);
+  ```  
 ### Checking SMS Balance
 
 To check the SMS balance:
-
+```php
     use Bundana\Services\Messaging\Mnotify;
     
     // For version 1
@@ -66,6 +73,7 @@ To check the SMS balance:
     
     // For version 2
     $response = Mnotify::checkSMSBalance('v2');
+```
 ## License
 
 This package is open-sourced software licensed under the [MIT license](https://chat.openai.com/c/LICENSE).
