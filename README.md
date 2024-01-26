@@ -9,6 +9,7 @@ To install the package, you can use Composer. Run the following command in your 
 ```bash
 composer require bundana/services
 ```
+
 After installation, add the service provider to your config/app.php file:
 ```php
 'providers' => [
@@ -16,12 +17,14 @@ After installation, add the service provider to your config/app.php file:
     Bundana\Services\Messaging\BundanaServiceProvider::class,
 ],
 ```
+
 After installation, add the service provider to your `config/app.php` file:
 
-    'providers' => [
+  ```php  'providers' => [
         // ...
         Bundana\Services\Messaging\BundanaServiceProvider::class,
     ],
+```
 Publish the package configuration file:
 
 ```sh
@@ -48,7 +51,12 @@ Additionally, if you plan to use the Hubtel Payment Gateway, provide the require
 
 To send an SMS, you can use the `Mnotify` class. Here's an example:
 
-    use  Bundana\Services\Messaging\Mnotify; Mnotify::to('recipient_phone_number') ->message('Your SMS message goes here') ->send();
+  ```php
+use  Bundana\Services\Messaging\Mnotify;
+Mnotify::to('recipient_phone_number')
+->message('Your SMS message goes here')
+->send();
+```
 ### Sending Bulk SMS
 
 To send bulk SMS, use the `sendBulk` method:
@@ -61,7 +69,8 @@ To send bulk SMS, use the `sendBulk` method:
     ];
 
     $responses = Mnotify::sendBulk($contactsAndMessages);
-  ```  
+  ```
+
 ### Checking SMS Balance
 
 To check the SMS balance:
