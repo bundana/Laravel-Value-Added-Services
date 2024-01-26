@@ -36,7 +36,13 @@ You'll need to configure the package with your Mnotify, Hubtel and Paystack API 
 -   `MNOTIFY_SENDER_ID= `: Your Mnotify sender ID.
 -   `MNOTIFY_API_KEY_V2=`: Your Mnotify V2 API key.
 -   `MNOTIFY_SENDER_ID_V2=`: Your Mnotify sender ID 
+# Add Hubtel credentials if using the Hubtel Payment Gateway
+-   `HUBTEL_API_KEY=your_Hubtel_API_key`
+-   `HUBTEL_API_SECRET=your_Hubtel_API_secret`
 
+# Add Paystack credentials if using Paystack
+-   `PAYSTACK_PUBLIC_KEY=your_Paystack_public_key`
+-   `PAYSTACK_SECRET_KEY=your_Paystack_secret_key`
 Additionally, if you plan to use the Hubtel Payment Gateway, provide the required credentials.
 ## Usage
 
@@ -45,20 +51,22 @@ Additionally, if you plan to use the Hubtel Payment Gateway, provide the require
 To send an SMS, you can use the `Mnotify` class. Here's an example:
 
   ```php
-use  Bundana\Services\Messaging\Mnotify;
+use Bundana\Services\Messaging\Mnotify;
+
 Mnotify::to('recipient_phone_number')
-->message('Your SMS message goes here')
-->send();
+    ->message('Your SMS message goes here')
+    ->send();
+
 ```
 
-To send an SMS using new sender id and api key:
+To send an SMS using a new sender ID and API key:
 
   ```php
-use  Bundana\Services\Messaging\Mnotify;
 Mnotify::to('recipient_phone_number')
-->message('Your SMS message goes here')
->newKeys(['apiKey' => 'ss', 'sender_id' =>'ss']);
-->send();
+    ->message('Your SMS message goes here')
+    ->newKeys(['apiKey' => 'ss', 'sender_id' =>'ss'])
+    ->send();
+
 ```
 
 ### Sending Bulk SMS via Mnotify
@@ -79,12 +87,13 @@ To send bulk SMS, use the `sendBulk` method:
 To check the SMS balance:
 ```php
     use Bundana\Services\Messaging\Mnotify;
-    
+
     // For version 1
     $response = Mnotify::checkSMSBalance();
-    
+
     // For version 2
     $response = Mnotify::checkSMSBalance('v2');
+
 ```
 ## License
 
