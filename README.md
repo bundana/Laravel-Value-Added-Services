@@ -97,4 +97,4 @@ To check the SMS balance:
 ```
 ## License
 
-This package is open-sourced software licensed under the [MIT license](https://chat.openai.com/c/LICENSE).
+This package is open-sourced software licensed under the [MIT license]([https://opensource.org/license/mit/]).
