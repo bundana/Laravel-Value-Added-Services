@@ -17,6 +17,7 @@ class ComposerStaticInit9b69897118271c55fb76d2c8e9af7e49
         'Bundana\\Services\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+            1 => __DIR__ . '/../..' . '/src',
         ),
     );
 

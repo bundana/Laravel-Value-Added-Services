@@ -1,19 +1,32 @@
 {
     "name": "bundana/services",
-    "description": "List of API services for development e.g. SMS, WhatsApp, email, etc.",
     "type": "library",
+    "description": "List of API services for development e.g. SMS, WhatsApp, email, etc.",
+    "keywords": [ 
+    ],
+    "homepage": "https://github.com/bundana/Laravel-Value-Added-Services",
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Bundana\\Services\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "bundana",
             "email": "bundanaabdulhafiz@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {}
+    "require": {
+    },
+    "require-dev": { 
+    },
+    "autoload": {
+        "psr-4": {
+            "Bundana\\Services\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bundana\\Services\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
 }
