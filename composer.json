@@ -15,7 +15,5 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {
-        "bundana/services": "^1.0"
-    }
+    "require": {}
 }
