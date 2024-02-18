@@ -13,7 +13,7 @@ class Validator
   }
 
   // Remove the country code "233" if it exists
-  $phoneWithoutCountryCode = preg_replace('/^233/', '', $phone) . 0;
+  $phoneWithoutCountryCode = preg_replace('/^233/', '', $phone);
 
   // Regular expression pattern for Ghanaian phone numbers
   $pattern = '/^(020|024|054|055|056|057|059|027)[0-9]{7}$/';
