@@ -1,7 +1,7 @@
 {
     "name": "bundana/services",
-    "description": "List of api services for development eg. SMS, Whatsapp, email etc",
-    "type": "libary",
+    "description": "List of API services for development e.g. SMS, WhatsApp, email, etc.",
+    "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -15,5 +15,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "bundana/services": "^1.0"
+    }
 }
