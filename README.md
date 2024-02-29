@@ -74,7 +74,7 @@ Sending sms using the version 2 of the Mnotify API:
   ```php
 Mnotify::to('recipient_phone_number')
     ->message('Your SMS message goes here')
-    ->send('V2');
+    ->send('v2');
    
  ```
 
