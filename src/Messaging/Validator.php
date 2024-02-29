@@ -11,21 +11,6 @@ class Validator
   if (!is_numeric($phone)) {
    throw new \InvalidArgumentException('Invalid phone number provided. e.g., 233542345921 or 0542345921');
   }
-
-  // Remove the country code "233" if it exists
-  $phoneWithoutCountryCode = preg_replace('/^233/', '', $phone);
-
-  // Regular expression pattern for Ghanaian phone numbers
-  $pattern = '/^(020|024|054|055|056|057|059|027)[0-9]{7}$/';
-
-  // Check if the phone number matches the pattern
-  if (preg_match($pattern, $phoneWithoutCountryCode)) {
-   return $phoneWithoutCountryCode;
-  } else {
-   // Throw an exception if the phone number doesn't match the pattern
-   throw new \InvalidArgumentException('Invalid Ghanaian phone number provided. Must start with acceptable format: 020, 024, 054, 055, 056, 057, 059, 027');
-
-  }
  }
 
 
@@ -67,7 +52,7 @@ class Validator
   * ```
   * $contactsAndMessages = [
   *     'recipient1' => 'message1',
-  *     'recipient2' => 'message2', 
+  *     'recipient2' => 'message2',
   * ];
   *
   * $responses = WhatsApp::sendBulk($contactsAndMessages);
