@@ -27,7 +27,7 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Creates a new instance of Mnotify and sets the phone number.
      *
-     * @param string $phone The phone number to send the notification to.
+     * @param  string  $phone  The phone number to send the notification to.
      * @return Mnotify The Mnotify instance with the phone number set.
      */
     public static function to($phone)
@@ -40,7 +40,7 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Sets the message for the Mnotify instance.
      *
-     * @param string $message The message to be sent.
+     * @param  string  $message  The message to be sent.
      * @return $this The Mnotify instance.
      */
     public function message($message)
@@ -52,7 +52,7 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Sets API version (v1 or v2).
      *
-     * @param string $version The API version to use.
+     * @param  string  $version  The API version to use.
      * @return $this The Mnotify instance.
      */
     public function setVersion($version)
@@ -64,7 +64,7 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Set new API keys dynamically.
      *
-     * @param array $newKeys The API keys to use.
+     * @param  array  $newKeys  The API keys to use.
      * @return $this The Mnotify instance.
      */
     public function newKeys($newKeys)
@@ -94,16 +94,23 @@ class Mnotify extends Validator implements SMSProviderInterface
         $this->setApiKeys();
         $this->buildQueryParams();
 
+
         $https = new SMSHttps();
         $response = $https->MnotifySMSRequest($this->query_params, $this->version);
         $response = json_decode($response, true);
 
+
         if (isset($response['status']) && $response['status'] != 'success') {
-            Log::error("Mnotify Error: " . json_encode($response));
-            return json_encode(['success' => false, 'message' => SMSHttps::MnotifySMSErrorMessage($response['code'])]);
+            return json_encode([
+                'success' => false,
+                'message' => SMSHttps::MnotifySMSErrorMessage($response['code'])
+            ], true);
         }
 
-        return json_encode(['success' => true, 'message' => SMSHttps::MnotifySMSErrorMessage($response['code']), 'code' => $response['code']]);
+        return json_encode([
+            'success' => true,
+            'message' => SMSHttps::MnotifySMSErrorMessage($response['code'])
+        ], true);
     }
 
     /**
@@ -111,14 +118,19 @@ class Mnotify extends Validator implements SMSProviderInterface
      */
     private function buildQueryParams()
     {
+
         $this->query_params = [
             'key' => $this->api_key,
-            'recipient' => [$this->phone],
-            'message' => $this->message,
-            'sender' => $this->sender_key,
-            'is_schedule' => !is_null($this->schedule_date),
-            'schedule_date' => $this->schedule_date ?? '',
+            'to' => $this->phone,
+            'msg' => $this->message,
+            'sender_id' => $this->sender_key,
         ];
+
+        if ($this->schedule_date) {
+            $this->query_params['is_schedule'] = !is_null($this->schedule_date);
+            $this->query_params['schedule_time'] = $this->schedule_date;
+        }
+        return $this->query_params;
     }
 
     /**
@@ -138,7 +150,7 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Send bulk SMS to multiple contacts.
      *
-     * @param array $contactsAndMessages An array of contacts and their respective messages.
+     * @param  array  $contactsAndMessages  An array of contacts and their respective messages.
      * @return array The responses from sending the messages.
      */
     public static function sendBulk($contactsAndMessages, $version = 'v1')
@@ -146,6 +158,7 @@ class Mnotify extends Validator implements SMSProviderInterface
         $instance = new static();
         $instance->setVersion($version);
         $responses = [];
+
 
         foreach ($contactsAndMessages as $contact => $message) {
             $responses[$contact] = $instance->to($contact)->message($message)->send();
@@ -157,8 +170,8 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Register a Sender ID.
      *
-     * @param string $id The sender ID to register.
-     * @param string $purpose The purpose of the registration.
+     * @param  string  $id  The sender ID to register.
+     * @param  string  $purpose  The purpose of the registration.
      * @return string The API response.
      */
     public static function registerSenderID($id, $purpose)
@@ -168,17 +181,22 @@ class Mnotify extends Validator implements SMSProviderInterface
         $response = json_decode($response, true);
 
         if (isset($response['status']) && $response['status'] !== 'success') {
-            Log::error("Mnotify Sender ID Error: " . json_encode($response));
-            return json_encode(['success' => false, 'message' => $response['message']]);
+            return json_encode([
+                'success' => false,
+                'message' => $response['message']
+            ], true);
         }
 
-        return json_encode(['success' => true, 'message' => $response['message'], 'data' => $response['summary']]);
+        return json_encode([
+            'success' => true,
+            'message' => $response['message']
+        ], true);
     }
 
     /**
      * Check SMS balance for the Mnotify service.
      *
-     * @param string|null $version API version to use.
+     * @param  string|null  $version  API version to use.
      * @return string The response including SMS balance or error message.
      */
     public static function SMSBalance($version = null)
@@ -187,12 +205,14 @@ class Mnotify extends Validator implements SMSProviderInterface
         $response = json_decode($https->MnotifySMSBalanceRequest($version), true);
 
         if (isset($response['status']) && $response['status'] !== 'success') {
-            Log::error("Mnotify Balance Error: " . json_encode($response));
-            return json_encode(['success' => false, 'message' => $response['message']]);
+            return json_encode([
+                'success' => false,
+                'message' => $response['message']
+            ]);
         }
 
-        return isset($response['sms_balance']) 
-            ? json_encode(['success' => true, 'balance' => $response['sms_balance']])
-            : json_encode(['success' => true, 'balance' => $response['balance'], 'bonus' => $response['bonus']]);
+        return isset($response['sms_balance'])
+            ? json_encode(['success' => true, 'balance' => $response['sms_balance']], true)
+            : json_encode(['success' => true, 'balance' => $response['balance'], 'bonus' => $response['bonus']], true);
     }
 }
