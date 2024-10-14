@@ -78,10 +78,10 @@ class Mnotify extends Validator implements SMSProviderInterface
      *
      * @return bool|string The API response or error message.
      */
-    public function send($scheduleDate = null)
+    public function send($sender_id = null, $scheduleDate = null)
     {
         $this->schedule_date = $scheduleDate;
-        return $this->smsApiRequest();
+        return $this->smsApiRequest($sender_id);
     }
 
     /**
@@ -89,9 +89,9 @@ class Mnotify extends Validator implements SMSProviderInterface
      *
      * @return bool|string The API response or error message.
      */
-    private function smsApiRequest()
+    private function smsApiRequest($sender_id = null)
     {
-        $this->setApiKeys();
+        $this->setApiKeys($sender_id);
         $this->buildQueryParams();
 
 
@@ -136,14 +136,14 @@ class Mnotify extends Validator implements SMSProviderInterface
     /**
      * Set API keys depending on version and environment.
      */
-    private function setApiKeys()
+    private function setApiKeys($sender_id = null)
     {
         if ($this->version === 'v2') {
             $this->api_key = env('MNOTIFY_API_KEY_V2', $this->newKeys['apiKey'] ?? '');
             $this->sender_key = env('MNOTIFY_SENDER_ID_V2', $this->newKeys['sender_id'] ?? '');
         } else {
             $this->api_key = env('MNOTIFY_API_KEY', $this->newKeys['apiKey'] ?? '');
-            $this->sender_key = env('MNOTIFY_SENDER_ID', $this->newKeys['sender_id'] ?? '');
+            $this->sender_key = $sender_id ?? env('MNOTIFY_SENDER_ID', $this->newKeys['sender_id'] ?? '');
         }
     }
 
@@ -153,7 +153,7 @@ class Mnotify extends Validator implements SMSProviderInterface
      * @param  array  $contactsAndMessages  An array of contacts and their respective messages.
      * @return array The responses from sending the messages.
      */
-    public static function sendBulk($contactsAndMessages, $version = 'v1')
+    public static function sendBulk($contactsAndMessages, $sender_id, $version = 'v1')
     {
         $instance = new static();
         $instance->setVersion($version);
@@ -161,7 +161,7 @@ class Mnotify extends Validator implements SMSProviderInterface
 
 
         foreach ($contactsAndMessages as $contact => $message) {
-            $responses[$contact] = $instance->to($contact)->message($message)->send();
+            $responses[$contact] = $instance->to($contact)->message($message)->send($sender_id);
         }
 
         return $responses;
