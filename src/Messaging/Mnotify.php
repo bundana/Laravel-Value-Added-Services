@@ -1,3 +1,5 @@
+<?php
+
 namespace Bundana\Services\Messaging;
 
 use Bundana\Services\Requests\SMSHttps;
