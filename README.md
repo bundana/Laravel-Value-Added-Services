@@ -1,135 +1,142 @@
-# Bundana Laravel Value Added Services Package
+# Mnotify SMS API Integration
 
-The Bundana Laravel Value Added Services package is a Laravel service for sending SMS using Hubtel and Mnotify and
-Accepting messages using the Paystack, Hubtel API.
+This package provides an easy-to-use interface for integrating the Mnotify SMS API into your PHP applications. The package allows you to send single and bulk SMS, check SMS balance, and register sender IDs with the Mnotify API.
 
-## Installation
+## **Installation**
 
-To install the package, you can use Composer. Run the following command in your terminal:
+To use this package, make sure you have the following environment variables set in your `.env` file:
 
-```bash
-composer require bundana/services
+```env
+MNOTIFY_API_KEY=your_api_key
+MNOTIFY_SENDER_ID=your_sender_id
+MNOTIFY_API_KEY_V2=your_api_key_v2
+MNOTIFY_SENDER_ID_V2=your_sender_id_v2
 ```
 
-After installation, add the service provider to your config/app.php file:
+### **Basic Usage**
+
+### 1. **Sending a Single SMS**
+
+To send a single SMS, you can use the `Mnotify::to()` method to specify the recipient’s phone number, followed by the `message()` method to set the SMS content. Finally, call `send()` to dispatch the message.
 
 ```php
-'providers' => [
-    // ...
- \Bundana\Services\BundanaServiceProvider::class,
-```
-
-Publish the package configuration file:
-
-```sh
- php artisan vendor:publish --provider="Bundana\Services\Messaging\BundanaServiceProvider" --tag="config"
-```
-
-This will create a `bundana-config.php` in your `config` folder of your laravel project file where you can set your
-Mnotify API keys.
-Now that we have published a few new files to our application we need to reload them with the following command:
-
-```sh
-$ composer dump-autoload
-```
-
-## Configuration
-
-You'll need to configure the package with your Mnotify, Hubtel and Paystack API keys. Open the `.env` file and add the
-following values:
-
-- `MNOTIFY_API_KEY=`:Your Mnotify API key.
-- `MNOTIFY_SENDER_ID= `: Your Mnotify sender ID.
-- `MNOTIFY_API_KEY_V2=`: Your Mnotify V2 API key.
-- `MNOTIFY_SENDER_ID_V2=`: Your Mnotify sender ID
-
-# Add Hubtel credentials if using the Hubtel Payment Gateway
-
-- `HUBTEL_API_KEY=your_Hubtel_API_key`
-- `HUBTEL_API_SECRET=your_Hubtel_API_secret`
-
-# Add Paystack credentials if using Paystack
-
-- `PAYSTACK_PUBLIC_KEY=your_Paystack_public_key`
-- `PAYSTACK_SECRET_KEY=your_Paystack_secret_key`
-  Additionally, if you plan to use the Hubtel Payment Gateway, provide the required credentials.
-
-## Usage
-
-### Sending SMS via Mnotify
-
-To send an SMS, you can use the `Mnotify` class. Here's an example:
-
-  ```php
 use Bundana\Services\Messaging\Mnotify;
 
-Mnotify::to('recipient_phone_number')
-    ->message('Your SMS message goes here')
-    ->send();
+// Example of sending a single SMS
+$response = Mnotify::to('1234567890') // recipient phone number
+    ->message('Hello, this is a test message!') // message content
+    ->send(); // send the message
 
+// The $response will contain the success status and details of the send operation
+echo $response;
 ```
 
-Sending sms using the version 2 of the Mnotify API:
+### 2. **Checking SMS Balance**
 
-  ```php
-Mnotify::to('recipient_phone_number')
-    ->message('Your SMS message goes here')
-    ->send('v2');
-   
- ```
-
-To send an SMS using a new sender ID and API key:
-
-  ```php
-Mnotify::to('recipient_phone_number')
-    ->message('Your SMS message goes here')
-    ->newKeys(['apiKey' => 'ss', 'sender_id' =>'ss'])
-    ->send(); 
-```
-
-### Sending Bulk SMS via Mnotify
-
-To send bulk SMS, use the `sendBulk` method:
+To check your SMS balance, use the `SMSBalance()` method. This can be done for both API version 1 (default) and version 2.
 
 ```php
-    use Bundana\Services\Messaging\Mnotify;
-    
-    $contactsAndMessages = [
-        'recipient1' => 'message1',
-        'recipient2' => 'message2',
-    ];
+use Bundana\Services\Messaging\Mnotify;
 
-    $responses = Mnotify::sendBulk($contactsAndMessages);
+// Example of checking balance
+$response = Mnotify::SMSBalance(); // by default, checks using version 1
+
+// If you need to check balance using version 2
+$response_v2 = Mnotify::SMSBalance('v2');
+
+// The $response will contain the SMS balance or an error message
+echo $response;
+```
+
+### 3. **Sending Bulk SMS**
+
+To send bulk SMS to multiple recipients, use the `sendBulk()` method. This method takes an associative array where the keys are phone numbers and the values are the corresponding messages to send.
+
+```php
+use Bundana\Services\Messaging\Mnotify;
+
+// Example of sending bulk SMS
+$contactsAndMessages = [
+    '1234567890' => 'Message to recipient 1',
+    '0987654321' => 'Message to recipient 2',
+    '5555555555' => 'Message to recipient 3',
+];
+
+$response = Mnotify::sendBulk($contactsAndMessages); // sending using version 1 by default
+
+// To send using version 2, pass the 'v2' as a second argument
+$response_v2 = Mnotify::sendBulk($contactsAndMessages, 'v2');
+
+// The $response will contain the success status and details of the send operation
+print_r($response);
+```
+
+### 4. **Registering a Sender ID**
+
+To register a sender ID with Mnotify, use the `registerSenderID()` method. This method takes two parameters: the sender ID and the purpose for registering the sender ID.
+
+```php
+use Bundana\Services\Messaging\Mnotify;
+
+// Example of registering a sender ID
+$senderId = 'MySenderID';
+$purpose = 'Transactional Messages';
+
+$response = Mnotify::registerSenderID($senderId, $purpose);
+
+// The $response will contain the success status and details of the registration
+echo $response;
+```
+
+### **Additional Features**
+
+- **Set Custom API Keys**: You can dynamically set API keys using the `newKeys()` method if you need to override the environment variables.
+  
+  Example:
+  
+  ```php
+  $customKeys = [
+      'apiKey' => 'custom_api_key',
+      'sender_id' => 'custom_sender_id',
+  ];
+
+  $response = Mnotify::to('1234567890')
+      ->message('Hello, custom API keys!')
+      ->newKeys($customKeys)
+      ->send();
   ```
 
-Sending bulk sms using version 2 of Mnotify sms API:
-
-```php
-    use Bundana\Services\Messaging\Mnotify;
-    
-    $contactsAndMessages = [
-        'recipient1' => 'message1',
-        'recipient2' => 'message2',
-    ];
-
-    $responses = Mnotify::sendBulk($contactsAndMessages, 'v2');
+- **Scheduled SMS**: To schedule SMS for future delivery, you can pass a `schedule_date` to the `send()` method.
+  
+  Example:
+  
+  ```php
+  $response = Mnotify::to('1234567890')
+      ->message('This message will be sent later!')
+      ->send(null, '2024-10-31 10:00:00');
   ```
 
-### Checking Mnotify SMS Balance
+### **Error Handling**
 
-To check the SMS balance:
+Each method returns a JSON-encoded response. If an error occurs, the response will include an error message and a status of `false`. 
 
-```php
-    use Bundana\Services\Messaging\Mnotify;
+Example error response:
 
-    // For version 1
-    $response = Mnotify::checkSMSBalance();
-
-    // For version 2
-    $response = Mnotify::checkSMSBalance('v2');
-
+```json
+{
+    "success": false,
+    "message": "Invalid recipient number."
+}
 ```
 
-## License
+### **API Versioning**
 
-This package is open-sourced software licensed under the [MIT license]([https://opensource.org/license/mit/]).
+By default, the package uses Mnotify API version 1 (`v1`). If you need to use API version 2, pass `'v2'` as a parameter when sending messages or checking the balance.
+
+### **License**
+
+This package is open-source and licensed under the MIT License.
+
+---
+
+This `README.md` file provides comprehensive documentation for using the Mnotify class, covering the key functionalities such as sending SMS, checking balance, bulk SMS, and registering sender IDs. You can further extend this document with additional details if required.
